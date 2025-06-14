@@ -1,0 +1,21 @@
+# Byte-compiled / virtual env
+__pycache__/
+*.py[cod]
+*.pkl
+*.faiss
+
+# Virtual env
+.venv/
+
+# Sensitive
+.env
+config.py
+
+# Generated
+feedback.csv
+vector_store/
+data/docs/
+
+# PyCharm
+.idea/
+*.iml
