@@ -18,6 +18,7 @@ Built and structured like a microservice that can scale to enterprise usage.
 - 🧾 Source citation in answers
 - ⚙️ API-first architecture via FastAPI
 - 📁 Local PDF upload and embedding endpoint
+- 🗣️ Human feedback collection with /feedback
 - 📊 Evaluation logging for every query
 
 ---
@@ -93,6 +94,30 @@ form-data:
 - Loads, chunks, embeds
 - Appends to FAISS index
 
+**Returns:**
+```json
+{
+  "message": "File uploaded and embedded successfully.",
+  "filename": "your_pdf_file.pdf"
+}
+```
+
+---
+
+### 🔹 3. `/feedback` – Submit User Feedback
+```http
+POST /feedback
+Content-Type: application/json
+
+{
+  "query": "What is RAG?",
+  "answer": "RAG stands for...",
+  "correct": true,
+  "comment": "Helpful but missing recent updates."
+}
+```
+📁 Saves feedback to `feedback.csv`
+
 ---
 
 ## 📊 Evaluation Techniques
@@ -108,17 +133,33 @@ form-data:
 ### 3. **Fallback Detection**
 - If no relevant chunks, returns fallback answer or low-confidence message
 
-### 4. **Manual Feedback Endpoint** (to be added)
-```http
-POST /feedback
-{
-  "query": "...",
-  "answer": "...",
-  "correct": true,
-  "comment": "Accurate but incomplete"
-}
+### 4. **Manual Feedback Endpoint**
+- Logged to `feedback.csv`
+- Enables offline scoring + model improvement loop
+
+---
+
+## 🐳 Dockerfile (for local or cloud deployment)
+```dockerfile
+FROM python:3.10-slim
+
+WORKDIR /app
+
+COPY . /app
+
+RUN pip install --upgrade pip && \
+    pip install -r requirements.txt
+
+EXPOSE 8000
+
+CMD ["python", "app/main.py"]
 ```
-Logs to `feedback.csv` or DB.
+
+Build and run:
+```bash
+docker build -t rag-bot .
+docker run -p 8000:8000 rag-bot
+```
 
 ---
 
@@ -146,4 +187,3 @@ Logs to `feedback.csv` or DB.
 
 ## 🙌 Credits
 Built with 💡 by [@ekta-shukla] — for GenAI microservices that scale.
-
